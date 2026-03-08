@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("collision enter");
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerExit(Collider other)
     {
         _gameManager.AddScore();
     }
