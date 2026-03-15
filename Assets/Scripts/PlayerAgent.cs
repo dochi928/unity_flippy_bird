@@ -31,7 +31,6 @@ public class PlayerAgent : MonoBehaviour
     public float learningRate = 0.3f;
     public float discountFactor = 0.5f;
     public float initialEpsilon = 0.1f;
-    public float Epsilon => _qLearning.Epsilon;
     public int Score => _currentScore;
         
     [Header("Reward")] public float surviveReward = 0.05f;
@@ -47,17 +46,22 @@ public class PlayerAgent : MonoBehaviour
     [Header("Action restriction")] public float maxYPosition = 4.5f;
     public float minYPosition = 2.0f;
     public float maxUpVelocity = 1.0f;
-    void Start()
+    
+    public float Epsilon
     {
+        get => _qLearning.Epsilon;
+        set => _qLearning.Epsilon = value;
+    }
+    
+    void Awake()
+    {
+        AgentManager.Instance.agent = this;
         _rigidbody = GetComponent<Rigidbody>();
-        _qLearning = new QLearning<(int, int, int)>(2,0.3f, 0.0f, 1f);
+        _qLearning = new QLearning<(int, int, int)>(2,learningRate, discountFactor, initialEpsilon);
         _initialPosition = _rigidbody.position;
     }
 
-    public void setEpsilon(float epsilon)
-    {
-        _qLearning.setEpsilon(epsilon);
-    }
+    
 
     void FixedUpdate()
     {
@@ -126,7 +130,8 @@ public class PlayerAgent : MonoBehaviour
     {
         _isDead = true;
         _currentReward = collisionPenalty;
-        
+        _qLearning.Update(_currentState, _currentAction, (int)(_currentReward+100f), GetState());
+        AgentManager.Instance.EndEpisode();
         //TODO = QLearning Qtable 게임오버 상태 업데이트
     }
 

@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor.Profiling.Memory.Experimental;
 using UnityEngine;
 
 public class AgentManager : MonoBehaviour
@@ -54,13 +55,19 @@ public class AgentManager : MonoBehaviour
     {
         _episodeCount++;
         DecayEpsilon();
+        ResetEpisode();
+    }
+
+    public void ResetEpisode()
+    {
+        agent.Reset();
         DestroyAllPipes();
     }
 
     void DecayEpsilon()
     {
         float newEpsilon = _initialEpsilon*Mathf.Pow(deacyRate, _episodeCount);
-        agent.setEpsilon(Mathf.Max(newEpsilon, minEpsilon));
+        agent.Epsilon = Mathf.Max(minEpsilon, newEpsilon);
     }
 
     void DestroyAllPipes()

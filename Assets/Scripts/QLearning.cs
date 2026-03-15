@@ -12,11 +12,10 @@ public class QLearning<TState>
     private float _epsilon; //탐험률(e)
 
     private int _actionCount = 2; //(stay, jump)
-    public float Epsilon => _epsilon;
-
-    public void setEpsilon(float epsilon)
+    public float Epsilon
     {
-        _epsilon = epsilon;
+        get => _epsilon;
+        set => _epsilon = value;
     }
 
     public QLearning(int actionCount, float learningRate, float discountFactor, float epsilon)
